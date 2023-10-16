@@ -1,5 +1,3 @@
 newTest:
-  examples:
+  workflows:
     - one
-    - two
-    - three
