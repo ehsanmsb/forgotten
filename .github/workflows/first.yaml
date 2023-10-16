@@ -14,7 +14,7 @@ jobs:
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.9.7
         with:
-          versionSpec: '1.x.x'
+          versionSpec: '1.x.'
       - name: Determine Version
         uses: gittools/actions/gitversion/execute@v0.9.7
       - name: Display SemVer
