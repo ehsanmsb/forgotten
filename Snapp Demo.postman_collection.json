@@ -1,0 +1,332 @@
+{
+	"info": {
+		"_postman_id": "398a203e-e643-40ad-ae7f-95358a3a16ff",
+		"name": "Snapp Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "547665"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/actuator/health",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"actuator",
+						"health"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "200",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actuator/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/vnd.spring-boot.actuator.v3+json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 25 Aug 2023 08:09:17 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"UP\"\n}"
+				},
+				{
+					"name": "503",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actuator/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"status": "Service Unavailable",
+					"code": 503,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/vnd.spring-boot.actuator.v3+json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 25 Aug 2023 08:20:37 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"DOWN\",\n    \"components\": {\n        \"customFlag\": {\n            \"status\": \"DOWN\"\n        },\n        \"diskSpace\": {\n            \"status\": \"UP\",\n            \"details\": {\n                \"total\": 83955703808,\n                \"free\": 48924307456,\n                \"threshold\": 10485760,\n                \"path\": \"/home/mohoma/Projects/snapp-demo/.\",\n                \"exists\": true\n            }\n        },\n        \"ping\": {\n            \"status\": \"UP\"\n        }\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Change Health Status",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/change-health-status?status=false",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"change-health-status"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "200",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/change-health-status?status=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"change-health-status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 25 Aug 2023 08:20:33 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Memory Usage",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/actuator/metrics/jvm.memory.used",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"actuator",
+						"metrics",
+						"jvm.memory.used"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "200",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actuator/metrics/jvm.memory.used",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"actuator",
+								"metrics",
+								"jvm.memory.used"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Disposition",
+							"value": "inline;filename=f.txt"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/vnd.spring-boot.actuator.v3+json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 25 Aug 2023 08:36:02 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"name\": \"jvm.memory.used\",\n    \"description\": \"The amount of used memory\",\n    \"baseUnit\": \"bytes\",\n    \"measurements\": [\n        {\n            \"statistic\": \"VALUE\",\n            \"value\": 83490976\n        }\n    ],\n    \"availableTags\": [\n        {\n            \"tag\": \"area\",\n            \"values\": [\n                \"heap\",\n                \"nonheap\"\n            ]\n        },\n        {\n            \"tag\": \"id\",\n            \"values\": [\n                \"G1 Survivor Space\",\n                \"Compressed Class Space\",\n                \"Metaspace\",\n                \"CodeCache\",\n                \"G1 Old Gen\",\n                \"G1 Eden Space\"\n            ]\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "increase-memory-usage",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/increase-memory?megabytes=200&sleep=5",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"increase-memory"
+					],
+					"query": [
+						{
+							"key": "megabytes",
+							"value": "200"
+						},
+						{
+							"key": "sleep",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "200",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/increase-memory?megabytes=200&sleep=5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"increase-memory"
+							],
+							"query": [
+								{
+									"key": "megabytes",
+									"value": "200"
+								},
+								{
+									"key": "sleep",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "35"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 25 Aug 2023 08:57:39 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "200 MB of memory allocated for 5 s."
+				}
+			]
+		}
+	]
+}
