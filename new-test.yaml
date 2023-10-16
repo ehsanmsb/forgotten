@@ -1,0 +1,4 @@
+newTest:
+  workflows:
+    - one
+    - two
