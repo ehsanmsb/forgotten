@@ -37,7 +37,7 @@ jobs:
           enable_prerelease_mode: false
           debug: false
       - name: Tag Version
-        if: ${{ steps.version.outputs.version_tag != $(git describe --tag) }}
+        if: steps.version.outputs.version_tag
         run: |
           git tag "${{ steps.version.outputs.version_tag }}"
           git push origin "${{ steps.version.outputs.version_tag }}" --force
