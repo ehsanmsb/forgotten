@@ -43,5 +43,5 @@ jobs:
           debug: false
       - name: Tag Release
         run: |
-          git tag ${{ steps.version.outputs.version_tag }}
-          git push origin ${{ steps.version.version_tag }}
+          git tag "${{ steps.version.outputs.version_tag }}"
+          git push origin "${{ steps.version.outputs.version_tag }}" --force
