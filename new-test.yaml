@@ -2,3 +2,4 @@ newTest:
   workflows:
     - one
     - two
+    - three
