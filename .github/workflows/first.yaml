@@ -14,15 +14,17 @@ jobs:
         with:
           fetch-depth: 0
       - name: Check commit message
+        id: commit
         run: |
           commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
-          if [[ "$commit_message" == *"fix:"* || "$commit_message" == *"feat:"* ]]; then
-            echo "Commit message contains 'fix:' or 'feat:'. Workflow will run."
-            # Add your workflow steps here
+          if [[ "$commit_message" == *"BREAKING CHANGE:"* || "$commit_message" == *"fix:"* || "$commit_message" == *"feat:"* ]]; then
+            new_version=true
+            echo "Commit message contains conventional commits specification for create new version. Workflow will run."
           else
-            echo "Commit message does not contain 'fix:' or 'feat:'. Workflow will be skipped."
+            echo "Commit message does not contain conventional commits specification. Workflow will be skipped."
           fi          
       - name: Application Version
+        if: steps.commit.outputs.new_version
         id: version
         uses: paulhatch/semantic-version@v5.3.0
         with:
@@ -37,7 +39,7 @@ jobs:
           enable_prerelease_mode: false
           debug: false
       - name: Tag Version
-        if: steps.version.outputs.version_tag
+        if: steps.commit.outputs.new_version
         run: |
           git tag "${{ steps.version.outputs.version_tag }}"
           git push origin "${{ steps.version.outputs.version_tag }}" --force
