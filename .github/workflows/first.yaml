@@ -20,15 +20,15 @@ jobs:
         with:
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
-          minor_pattern: "(feat)"
+          minor_pattern: "(MINOR)"
           version_format: "${major}.${minor}.${patch}"
           bump_each_commit: true
-          bump_each_commit_patch_pattern: "(fix)"
+          bump_each_commit_patch_pattern: ""
           search_commit_body: true
           user_format_type: "csv"
           enable_prerelease_mode: false
           debug: false
-          
+
       - name: echo Version
         run: echo "${{ steps.version.outputs }}"
 
