@@ -19,10 +19,13 @@ jobs:
           commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
           if [[ "$commit_message" == *"BREAKING CHANGE:"* || "$commit_message" == *"fix:"* || "$commit_message" == *"feat:"* ]]; then
             export new_version_flag="true"
+            echo "$new_version_flag"
             echo "Commit message contains conventional commits specification for create new version. Workflow will run."
           else
             echo "Commit message does not contain conventional commits specification. Workflow will be skipped."
-          fi          
+          fi  
+      - name: test env
+        run: echo "$new_version_flag"
       - name: Application Version
         if: env.new_version_flag == 'true'
         id: version
