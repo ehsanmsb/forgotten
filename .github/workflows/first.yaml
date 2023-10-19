@@ -13,7 +13,7 @@ jobs:
           fetch-depth: 0                # fetch the whole repo history
       - name: Application Version
         id: version
-        uses: paulhatch/semantic-version@v5.2.2
+        uses: paulhatch/semantic-version@v5.3.0
         with:
           # The prefix to use to identify tags
           tag_prefix: "v"
