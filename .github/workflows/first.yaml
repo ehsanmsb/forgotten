@@ -31,5 +31,5 @@ jobs:
       - name: Tag Version
         run: |
           git tag "${{ steps.version.outputs.version_tag }}"
-          git push origin "${{ steps.version.outputs.version_tag }}" --force
-          
+          git tag -a -m "pre-${{ steps.version.outputs.new_version }}" "v${{ steps.version.outputs.new_version }}"
+          git push origin --tags
