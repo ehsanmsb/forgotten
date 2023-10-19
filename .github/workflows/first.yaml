@@ -29,7 +29,8 @@ jobs:
           enable_prerelease_mode: false
           debug: false
       - name: Tag Version
+        if: steps.version.outputs.version_tag
         run: |
-          git tag "${{ steps.version.outputs.version_tag }}"
-          git tag -a -m "pre-${{ steps.version.outputs.version_tag }}" "v${{ steps.version.outputs.version_tag }}"
-          git push origin --tags
+          echo ${{ steps.version.outputs }}
+          git tag ${{ steps.version.outputs.version_tag }}"
+          git push origin ${{ steps.version.outputs.version_tag }}" --force
