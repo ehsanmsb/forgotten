@@ -13,14 +13,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.head_ref }}
           fetch-depth: 0
       - name: Application Version
         id: version
         uses: paulhatch/semantic-version@v5.3.0
         with:
           tag_prefix: "v"
-          major_pattern: "(BREAKING CHANGE)"
+          major_pattern: "(MAJOR)"
           minor_pattern: "(feat)"
           version_format: "${major}.${minor}.${patch}"
           bump_each_commit: true
