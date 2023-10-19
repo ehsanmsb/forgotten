@@ -18,13 +18,13 @@ jobs:
         run: |
           commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
           if [[ "$commit_message" == *"BREAKING CHANGE:"* || "$commit_message" == *"fix:"* || "$commit_message" == *"feat:"* ]]; then
-            new_version_flag="true"
+            export new_version_flag="true"
             echo "Commit message contains conventional commits specification for create new version. Workflow will run."
           else
             echo "Commit message does not contain conventional commits specification. Workflow will be skipped."
           fi          
       - name: Application Version
-        if: ${{ steps.commit.outputs.new_version_flag == 'true' }}
+        if: env.new_version_flag == 'true'
         id: version
         uses: paulhatch/semantic-version@v5.3.0
         with:
@@ -39,7 +39,7 @@ jobs:
           enable_prerelease_mode: false
           debug: false
       - name: Tag Version
-        if: ${{ steps.commit.outputs.new_version_flag == 'true' }}
+        if: env.new_version_flag == 'true'
         run: |
           git tag "${{ steps.version.outputs.version_tag }}"
           git push origin "${{ steps.version.outputs.version_tag }}" --force
