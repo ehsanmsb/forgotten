@@ -21,7 +21,7 @@ jobs:
           major_pattern: "BREAKING CHANGE:"
           minor_pattern: "feat:"
           version_format: "${major}.${minor}.${patch}"
-          bump_each_commit: false
+          bump_each_commit: true
           bump_each_commit_patch_pattern: "fix:"
           search_commit_body: true
           user_format_type: "csv"
