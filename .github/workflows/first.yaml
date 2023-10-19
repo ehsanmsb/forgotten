@@ -20,7 +20,7 @@ jobs:
         with:
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
-          minor_pattern: "(MINOR)"
+          minor_pattern: "(fix)"
           version_format: "${major}.${minor}.${patch}"
           bump_each_commit: true
           bump_each_commit_patch_pattern: ""
