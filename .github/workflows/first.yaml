@@ -28,9 +28,12 @@ jobs:
           user_format_type: "csv"
           enable_prerelease_mode: false
           debug: false
+          
+      - name: echo Version
+        run: echo "${{ steps.version.outputs }}"
+
       - name: Tag Version
         if: steps.version.outputs.version_tag
         run: |
-          echo ${{ steps.version.outputs }}
-          git tag ${{ steps.version.outputs.version_tag }}"
-          git push origin ${{ steps.version.outputs.version_tag }}" --force
+          git tag "${{ steps.version.outputs.version_tag }}"
+          git push origin "${{ steps.version.outputs.version_tag }}" --force
