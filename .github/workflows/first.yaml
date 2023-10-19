@@ -8,6 +8,8 @@ on:
 jobs:
   versioning:
     runs-on: ubuntu-latest
+    env:
+      new_version_flag: false
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
