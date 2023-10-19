@@ -9,6 +9,15 @@ jobs:
   versioning:
     runs-on: ubuntu-latest
     steps:
+      - name: Check commit message
+        run: |
+          commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
+          if [[ "$commit_message" == *"fix:"* || "$commit_message" == *"feat:"* ]]; then
+            echo "Commit message contains 'fix:' or 'feat:'. Workflow will run."
+            # Add your workflow steps here
+          else
+            echo "Commit message does not contain 'fix:' or 'feat:'. Workflow will be skipped."
+          fi
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
@@ -28,8 +37,7 @@ jobs:
           enable_prerelease_mode: false
           debug: false
       - name: Tag Version
-        if: steps.version.outputs.version_tag
+        if: ${{ steps.version.outputs.version_tag != $(git describe --tag) }}
         run: |
           git tag "${{ steps.version.outputs.version_tag }}"
           git push origin "${{ steps.version.outputs.version_tag }}" --force
-          
