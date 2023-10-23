@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - "main"
-
+env:
+  app_version: latest
 jobs:
   versioning:
     runs-on: ubuntu-latest
@@ -45,6 +46,7 @@ jobs:
       - name: Tag Version
         if: env.new_version_flag == 'true'
         run: |
+          echo "app_version=${{ steps.version.outputs.version_tag }}" >> $GITHUB_ENV
           git tag "${{ steps.version.outputs.version_tag }}"
           git push origin "${{ steps.version.outputs.version_tag }}" --force
 
@@ -61,6 +63,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - run: mvn clean install --batch-mode -DskipTests
+      - run: echo "${{ env.app_version }}"
       - run: mkdir staging && cp target/*.jar staging
       - uses: actions/upload-artifact@v3
         with:
