@@ -54,6 +54,8 @@ jobs:
   artifact:
     runs-on: ubuntu-latest
     needs: [versioning]
+    env:
+      NEW_VERSION: ${{needs.versioning.outputs.new_version}}    
     steps:  
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -63,8 +65,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - env:
-          NEW_VERSION: ${{needs.versioning.outputs.new_version}}
+      - name: change-pom file
         uses: Mudlet/xmlstarlet-action@master
         with:
           args: ed -L -u /_:project/_:version -v ${{ env.NEW_VERSION }} pom.xml
@@ -72,5 +73,5 @@ jobs:
       - run: mkdir staging && cp target/*.jar staging
       - uses: actions/upload-artifact@v3
         with:
-          name: Package
+          name: snapp-demo-${{ env.NEW_VERSION }}
           path: staging
