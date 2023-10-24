@@ -63,10 +63,9 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - run: mvn clean install --batch-mode -DskipTests
       - env:
           NEW_VERSION: ${{needs.versioning.outputs.new_version}}
-        run: echo "$NEW_VERSION"
+        run: mvn clean install versions:set -DnewVersion=$NEW_VERSION -DgenerateBackupPoms=false --batch-mode -DskipTests
       - run: mkdir staging && cp target/*.jar staging
       - uses: actions/upload-artifact@v3
         with:
