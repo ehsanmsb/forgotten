@@ -70,6 +70,13 @@ jobs:
         with:
           args: ed -L -u /_:project/_:version -v ${{ env.NEW_VERSION }} pom.xml
       - run: mvn clean install --batch-mode -DskipTests
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - run: mkdir staging && cp target/*.jar staging
       - uses: actions/upload-artifact@v3
         with:
