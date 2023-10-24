@@ -8,7 +8,7 @@ jobs:
   versioning:
     runs-on: ubuntu-latest
     outputs:
-      new_version: ${{ steps.version.outputs.app_version }}    
+      new_version: ${{ steps.tag.outputs.app_version }}    
     env:
       new_version_flag: false
     steps:
@@ -44,6 +44,7 @@ jobs:
           enable_prerelease_mode: false
           debug: false
       - name: Tag Version
+        id: tag
         if: env.new_version_flag == 'true'
         run: |
           echo "app_version=${{ steps.version.outputs.version_tag }}" >> "$GITHUB_OUTPUT"
@@ -53,7 +54,7 @@ jobs:
   artifact:
     runs-on: ubuntu-latest
     needs: [versioning]
-    steps:
+    steps:  
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
@@ -63,7 +64,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - run: mvn clean install --batch-mode -DskipTests
-      - run: echo "${{ needs.versioning.outputs.new_version }}"
+      - env:
+          NEW_VERSION: ${{needs.versioning.outputs.new_version}}
+        run: echo "$NEW_VERSION"
       - run: mkdir staging && cp target/*.jar staging
       - uses: actions/upload-artifact@v3
         with:
