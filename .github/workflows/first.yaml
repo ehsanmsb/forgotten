@@ -3,10 +3,59 @@ name: Git Version
 on:
   push:
     branches:
-      - "test-pull"
+      - "main"
 jobs:
+  versioning:
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.tag.outputs.app_version }}    
+    env:
+      new_version_flag: false
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check commit message
+        id: commit
+        run: |
+          commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
+          if [[ "$commit_message" == *"BREAKING CHANGE:"* || "$commit_message" == *"fix:"* || "$commit_message" == *"feat:"* ]]; then
+            echo "new_version_flag=true" >> $GITHUB_ENV
+            echo "Commit message contains conventional commits specification for create new version. Workflow will run."
+          else
+            echo "Commit message does not contain conventional commits specification. Workflow will be skipped."
+          fi  
+      - name: test env
+        run: echo "$new_version_flag"
+      - name: Application Version
+        if: env.new_version_flag == 'true'
+        id: version
+        uses: paulhatch/semantic-version@v5.3.0
+        with:
+          tag_prefix: "v"
+          major_pattern: "BREAKING CHANGE:"
+          minor_pattern: "feat:"
+          version_format: "${major}.${minor}.${patch}"
+          bump_each_commit: true
+          bump_each_commit_patch_pattern: "fix:"
+          search_commit_body: true
+          user_format_type: "csv"
+          enable_prerelease_mode: false
+          debug: false
+      - name: Tag Version
+        id: tag
+        if: env.new_version_flag == 'true'
+        run: |
+          echo "app_version=${{ steps.version.outputs.version_tag }}" >> "$GITHUB_OUTPUT"
+          git tag "${{ steps.version.outputs.version_tag }}"
+          git push origin "${{ steps.version.outputs.version_tag }}" --force
+
   artifact:
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
+    needs: [versioning]
+    env:
+      NEW_VERSION: ${{needs.versioning.outputs.new_version}}    
     steps:  
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -16,82 +65,20 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - run: mvn clean install --batch-mode
-
-  # versioning:
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     new_version: ${{ steps.tag.outputs.app_version }}    
-  #   env:
-  #     new_version_flag: false
-  #   steps:
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Check commit message
-  #       id: commit
-  #       run: |
-  #         commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
-  #         if [[ "$commit_message" == *"BREAKING CHANGE:"* || "$commit_message" == *"fix:"* || "$commit_message" == *"feat:"* ]]; then
-  #           echo "new_version_flag=true" >> $GITHUB_ENV
-  #           echo "Commit message contains conventional commits specification for create new version. Workflow will run."
-  #         else
-  #           echo "Commit message does not contain conventional commits specification. Workflow will be skipped."
-  #         fi  
-  #     - name: test env
-  #       run: echo "$new_version_flag"
-  #     - name: Application Version
-  #       if: env.new_version_flag == 'true'
-  #       id: version
-  #       uses: paulhatch/semantic-version@v5.3.0
-  #       with:
-  #         tag_prefix: "v"
-  #         major_pattern: "BREAKING CHANGE:"
-  #         minor_pattern: "feat:"
-  #         version_format: "${major}.${minor}.${patch}"
-  #         bump_each_commit: true
-  #         bump_each_commit_patch_pattern: "fix:"
-  #         search_commit_body: true
-  #         user_format_type: "csv"
-  #         enable_prerelease_mode: false
-  #         debug: false
-  #     - name: Tag Version
-  #       id: tag
-  #       if: env.new_version_flag == 'true'
-  #       run: |
-  #         echo "app_version=${{ steps.version.outputs.version_tag }}" >> "$GITHUB_OUTPUT"
-  #         git tag "${{ steps.version.outputs.version_tag }}"
-  #         git push origin "${{ steps.version.outputs.version_tag }}" --force
-
-  # artifact:
-  #   runs-on: ubuntu-latest
-  #   needs: [versioning]
-  #   env:
-  #     NEW_VERSION: ${{needs.versioning.outputs.new_version}}    
-  #   steps:  
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth:  --batch-mode -DskipTests
-  #     - uses: actions/setup-java@v3
-  #       with:
-  #         java-version: '17'
-  #         distribution: 'temurin'
-  #     - name: change-pom file
-  #       uses: Mudlet/xmlstarlet-action@master
-  #       with:
-  #         args: ed -L -u /_:project/_:version -v ${{ env.NEW_VERSION }} pom.xml
-  #     - run: mvn clean install --batch-mode -DskipTests
-  #     - name: Cache local Maven repository
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: ~/.m2/repository
-  #         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-maven-
-  #     - run: mkdir staging && cp target/*.jar staging
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: snapp-demo-${{ env.NEW_VERSION }}
-  #         path: staging
+      - name: change-pom file
+        uses: Mudlet/xmlstarlet-action@master
+        with:
+          args: ed -L -u /_:project/_:version -v ${{ env.NEW_VERSION }} pom.xml
+      - run: mvn clean install --batch-mode -DskipTests
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - run: mkdir staging && cp target/*.jar staging
+      - uses: actions/upload-artifact@v3
+        with:
+          name: snapp-demo-${{ env.NEW_VERSION }}
+          path: staging
