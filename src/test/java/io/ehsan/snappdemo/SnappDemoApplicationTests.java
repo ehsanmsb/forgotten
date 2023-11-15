@@ -1,10 +1,13 @@
-FROM registry.devopsco.space:5000/bellsoft/liberica-openjdk-alpine:17
+package io.ehsan.snappdemo;
 
-WORKDIR /app
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
-EXPOSE 8080
+@SpringBootTest
+class SnappDemoApplicationTests {
 
-ARG JAR_FILE
-COPY ${JAR_FILE} app.jar
+	@Test
+	void contextLoads() {
+	}
 
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=90.0", "-jar", "app.jar"]
+}
