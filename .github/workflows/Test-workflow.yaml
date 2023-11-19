@@ -1,0 +1,13 @@
+name: Versioning
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        run: echo $GITHUB_REF_NAME
