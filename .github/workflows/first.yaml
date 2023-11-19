@@ -3,7 +3,7 @@ name: Git Version
 on:
   push:
     branches:
-      - "main"
+      - "main123"
 jobs:
   versioning:
     runs-on: ubuntu-latest
