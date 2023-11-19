@@ -3,7 +3,7 @@ name: Versioning
 on:
   push:
     branches:
-      - "main"
+      - "main342"
 
 jobs:
   versioning:

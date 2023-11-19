@@ -51,4 +51,4 @@ jobs:
         uses: actions-js/push@master
         with:
           github_token: ${{ secrets.SNAPP_REPO_TOKEN }}
-          branch: ${{ GITHUB_REF_NAME }}
+          branch: $GITHUB_REF_NAME
