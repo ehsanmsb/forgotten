@@ -1,18 +1,14 @@
-name: Git Version
+name: test
 
 on:
   pull_request:
-    types: [opened, reopened]
+    types:
+      - closed
 
 jobs:
-  testing:
+  if_merged:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    steps:  
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+    steps:
+    - run: |
+        echo The PR was merged
