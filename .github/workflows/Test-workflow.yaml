@@ -5,22 +5,12 @@ on:
     branches:
       - "main"
 
-env:
-  NEW_VERSION_GENERATED: "v1.0.0"
-
 jobs:
   job1:
     runs-on: ubuntu-latest
-    outputs:
-      new_version: ${{ steps.tag.outputs.new-version-generated }}    e
     steps:
       - name: echo value
-        run: echo "NEW_VERSION_GENERATED = $NEW_VERSION_GENERATED"
+        run: echo ${{ vars.NEW_VERSION_GENERATED }}
       - name: change value
-        run: echo "::set-env name=NEW_VERSION_GENERATED::v1.2.0"
-      - name: Print new value of env variable
-        run: echo "NEW_VERSION_GENERATED = $NEW_VERSION_GENERATED"
-      - name: set outputs
-        id: set_outputs
         run: |
-          echo "::set-output name=new-version-generated::$NEW_VERSION_GENERATED"
+          echo "NEW_VERSION_GENERATED=v1.2.0" >> $GITHUB_ENV
