@@ -48,7 +48,10 @@ jobs:
         with:
           args: ed -L -u /_:project/_:version -v ${{ steps.new-version.outputs.version_tag }} pom.xml
       - name: Commit-pom-file
-        uses: actions-js/push@master
-        with:
-          github_token: ${{ secrets.SNAPP_REPO_TOKEN }}
-          branch: $GITHUB_REF_NAME
+        run: |
+          git config --global user.name 'versioning_bot'
+          git config --global user.email 'versioning.bot@gmail.com'
+          git remote set-url origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git checkout "${GITHUB_REF:11}"
+          git commit -am "New version has generated ${{ steps.new-version.outputs.version_tag }}"
+          git push
