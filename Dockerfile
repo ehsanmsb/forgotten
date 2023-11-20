@@ -1,4 +1,4 @@
-FROM registry.devopsco.space:5000/bellsoft/liberica-openjdk-alpine:17
+FROM bellsoft/liberica-openjdk-alpine:17
 
 WORKDIR /app
 
