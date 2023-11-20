@@ -3,7 +3,7 @@ name: Versioning
 on:
   push:
     branches:
-      - "main"
+      - "maindfsfd"
 
 jobs:
   generate_new_version:
