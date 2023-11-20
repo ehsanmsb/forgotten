@@ -89,7 +89,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: snapp-app-${{ inputs.new_version_app }}
-          path: ./target
+          path: staging/snapp-app-${{ inputs.new_version_app }}.jar
 
   build-image:
     runs-on: ubuntu-latest
