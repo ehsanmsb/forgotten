@@ -58,6 +58,7 @@ jobs:
           git push origin "${{ inputs.new_version_app }}" --force
 
   build-artifact:
+    if: ${{ inputs.new_version_app }}
     # if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     needs: [generate-tag-version]
@@ -93,6 +94,7 @@ jobs:
           path: staging/snapp-app-${{ inputs.new_version_app }}.jar
 
   build-image:
+    if: ${{ inputs.new_version_app }}
     runs-on: ubuntu-latest
     needs: [build-artifact]
     steps:
