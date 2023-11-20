@@ -52,7 +52,14 @@ jobs:
         with:
           args: ed -L -u /_:project/_:version -v ${{ steps.new-version.outputs.version_tag }} pom.xml
       - name: Commit-pom-file
-        uses: actions-js/push@master
-        with:
-          github_token: ${{ secrets.SNAPP_REPO_TOKEN }}
-          branch: $GITHUB_REF_NAME
+        run: |
+          git config --global user.name 'ehsan'
+          git config --global user.email 'ehsan.mosayebi@gmail.com'
+          git remote set-url origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git checkout "${GITHUB_REF:11}"
+          git commit -am "Automated Pom commit"
+          git push
+        # uses: actions-js/push@master
+        # with:
+        #   github_token: ${{ secrets.SNAPP_REPO_TOKEN }}
+        #   branch: $GITHUB_REF_NAME
