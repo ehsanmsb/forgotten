@@ -15,7 +15,7 @@ jobs:
         id: testi
         run: |
           echo "var_test=Ehsan-Mosayebi" >> "$GITHUB_OUTPUT"
-          echo "your name is: ${{ var_test }}"
+          echo "your name is: ${var_test}"
   call_build:
     needs: [generate_new_version]
     uses: ./.github/workflows/Build.yaml
