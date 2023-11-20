@@ -51,6 +51,7 @@ jobs:
       #     enable_prerelease_mode: false
       #     debug: false
       - name: Tag Version
+        if: ${{ inputs.new_version_app }}
         id: tag
         run: |
           git tag "${{ inputs.new_version_app }}"
