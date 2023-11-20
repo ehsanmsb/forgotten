@@ -1,14 +1,9 @@
 name: Versioning
 
-# on:
-#   pull_request:
-#     types:
-#       - closed
-
 on:
-  push:
-    branches:
-      - "main"
+  pull_request:
+    types:
+      - closed
 
 jobs:
   generate_new_version:
@@ -33,9 +28,9 @@ jobs:
           else
             echo "Commit message does not contain conventional commits specification. Workflow will be skipped."
           fi
-      - name: new-version
+      - name: semantic versioning action
         if: env.new_version_flag == 'true'
-        id: new-version
+        id: semantic-versioning
         uses: paulhatch/semantic-version@v5.3.0
         with:
           tag_prefix: "v"
@@ -48,21 +43,21 @@ jobs:
           user_format_type: "csv"
           enable_prerelease_mode: false
           debug: false
-      - name: change-pom-file
+      - name: change version in pom file
         if: env.new_version_flag == 'true'
         uses: Mudlet/xmlstarlet-action@master
         with:
-          args: ed -L -u /_:project/_:version -v ${{ steps.new-version.outputs.version_tag }} pom.xml
-      - name: Commit-pom-file
+          args: ed -L -u /_:project/_:version -v ${{ steps.semantic-versioning.outputs.version_tag }} pom.xml
+      - name: commit and push pom file
         if: env.new_version_flag == 'true'
-        id: commit-stage
+        id: commit-pom
         run: |
-          echo "app_version=${{ steps.new-version.outputs.version_tag }}" >> "$GITHUB_OUTPUT"
+          echo "app_version=${{ steps.semantic-versioning.outputs.version_tag }}" >> "$GITHUB_OUTPUT"
           git config --global user.name 'versioning_bot'
           git config --global user.email 'versioning.bot@gmail.com'
           git remote set-url origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git checkout "${GITHUB_REF:11}"
-          git commit -am "New version has generated ${{ steps.new-version.outputs.version_tag }}"
+          git commit -am "${{ steps.semantic-versioning.outputs.version_tag }} version has generated"
           git push
 
   call_build:
