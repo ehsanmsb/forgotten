@@ -1,17 +1,13 @@
 name: Versioning
 
-# on:
-#   pull_request:
-#     types:
-#       - closed
-
 on:
-  push:
-    branches:
-      - "new-new"
+  pull_request:
+    types:
+      - closed
+
 jobs:
   versioning:
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:
       new_version: ${{ steps.tag.outputs.app_version }}    
@@ -33,7 +29,7 @@ jobs:
             echo "Commit message does not contain conventional commits specification. Workflow will be skipped."
           fi
       - name: new-version
-        # if: env.new_version_flag == 'true'
+        if: env.new_version_flag == 'true'
         id: new-version
         uses: paulhatch/semantic-version@v5.3.0
         with:
@@ -59,7 +55,3 @@ jobs:
           git checkout "${GITHUB_REF:11}"
           git commit -am "New version has generated ${{ steps.new-version.outputs.version_tag }}"
           git push
-        # uses: actions-js/push@master
-        # with:
-        #   github_token: ${{ secrets.SNAPP_REPO_TOKEN }}
-        #   branch: $GITHUB_REF_NAME
