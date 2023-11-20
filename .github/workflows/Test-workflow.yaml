@@ -19,4 +19,5 @@ jobs:
   call_build:
     uses: ./.github/workflows/Build.yaml
     with:
-      var_pass: ${{ needs.generate_new_version.outputs.new_var }}  
+      var_pass: 'Ehsan Mosayebi'
+      # var_pass: ${{ needs.generate_new_version.outputs.new_var }}  
