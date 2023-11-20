@@ -1,11 +1,12 @@
-name: Git Version
+name: Build
 
-on:
-  push:
-    branches:
-      - "main123"
+on: 
+  workflow_run:
+      workflows: ["Versioning"]
+      types:
+        - completed
 jobs:
-  versioning:
+  generate-tag-version:
     runs-on: ubuntu-latest
     outputs:
       new_version: ${{ steps.tag.outputs.app_version }}    

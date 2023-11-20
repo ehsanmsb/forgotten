@@ -3,51 +3,24 @@ name: Versioning
 on:
   push:
     branches:
-      - "main342"
+      - "main"
+
+env:
+  NEW_VERSION_GENERATED: "v1.0.0"
 
 jobs:
-  versioning:
+  job1:
     runs-on: ubuntu-latest
     outputs:
-      new_version: ${{ steps.tag.outputs.app_version }}    
-    env:
-      new_version_flag: false
+      new_version: ${{ steps.tag.outputs.new-version-generated }}    e
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Check commit message
-        id: commit
+      - name: echo value
+        run: echo "NEW_VERSION_GENERATED = $NEW_VERSION_GENERATED"
+      - name: change value
+        run: echo "::set-env name=NEW_VERSION_GENERATED::v1.2.0"
+      - name: Print new value of env variable
+        run: echo "NEW_VERSION_GENERATED = $NEW_VERSION_GENERATED"
+      - name: set outputs
+        id: set_outputs
         run: |
-          commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
-          if [[ "$commit_message" == *"BREAKING CHANGE:"* || "$commit_message" == *"fix:"* || "$commit_message" == *"feat:"* ]]; then
-            echo "new_version_flag=true" >> $GITHUB_ENV
-            echo "Commit message contains conventional commits specification for create new version. Workflow will run."
-          else
-            echo "Commit message does not contain conventional commits specification. Workflow will be skipped."
-          fi
-      - name: new-version
-        if: env.new_version_flag == 'true'
-        id: new-version
-        uses: paulhatch/semantic-version@v5.3.0
-        with:
-          tag_prefix: "v"
-          major_pattern: "BREAKING CHANGE:"
-          minor_pattern: "feat:"
-          version_format: "${major}.${minor}.${patch}"
-          bump_each_commit: true
-          bump_each_commit_patch_pattern: "fix:"
-          search_commit_body: true
-          user_format_type: "csv"
-          enable_prerelease_mode: false
-          debug: false
-      - name: change-pom-file
-        uses: Mudlet/xmlstarlet-action@master
-        with:
-          args: ed -L -u /_:project/_:version -v ${{ steps.new-version.outputs.version_tag }} pom.xml
-      - name: Commit-pom-file
-        uses: actions-js/push@master
-        with:
-          github_token: ${{ secrets.SNAPP_REPO_TOKEN }}
-          branch: $GITHUB_REF_NAME
+          echo "::set-output name=new-version-generated::$NEW_VERSION_GENERATED"
