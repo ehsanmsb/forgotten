@@ -3,14 +3,20 @@ name: Versioning
 on:
   push:
     branches:
-      - "mainasfasf"
+      - "main"
 
 jobs:
-  job1:
+  generate_new_version:
+    outputs:
+      new-var: ${{ steps.testi.outputs.var_test }}
     runs-on: ubuntu-latest
     steps:
-      - name: echo value
-        run: echo ${{ vars.NEW_VERSION_GENERATED }}
-      - name: change value
+      - name: set value
+        id: testi
         run: |
-          echo "NEW_VERSION_GENERATED=v1.2.0" >> $GITHUB_ENV
+          echo "var_test=Ehsan-Mosayebi" >> "$GITHUB_OUTPUT"
+          echo "your name is: $var_test"
+  call_build:
+    uses: ./.github/workflows/Build.yaml
+    with:
+      var_pass: ${{ needs.generate_new_version.outputs.new_var }}  
