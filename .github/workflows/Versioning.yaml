@@ -8,7 +8,7 @@ name: Versioning
 on:
   push:
     branches:
-      - "main"
+      - "main123"
 
 jobs:
   generate_new_version:
