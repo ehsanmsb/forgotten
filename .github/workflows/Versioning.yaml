@@ -61,7 +61,7 @@ jobs:
           git push
 
   call_build:
-    if: ${{ (github.event.pull_request.merged == true) && (needs.generate_new_version.outputs.new_version != '') }} 
+    if: github.event.pull_request.merged == true 
     needs: [generate_new_version]
     uses: ./.github/workflows/Build.yaml
     with:
