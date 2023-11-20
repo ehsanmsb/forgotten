@@ -6,7 +6,7 @@ on:
       - closed
 
 jobs:
-  versioning:
+  generate_new_version:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:
@@ -49,9 +49,19 @@ jobs:
           args: ed -L -u /_:project/_:version -v ${{ steps.new-version.outputs.version_tag }} pom.xml
       - name: Commit-pom-file
         run: |
+          echo "app_version=${{ steps.version.outputs.version_tag }}" >> "$GITHUB_OUTPUT"
           git config --global user.name 'versioning_bot'
           git config --global user.email 'versioning.bot@gmail.com'
           git remote set-url origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
           git checkout "${GITHUB_REF:11}"
           git commit -am "New version has generated ${{ steps.new-version.outputs.version_tag }}"
           git push
+
+  call_build:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    needs: [generate_new_version]
+    steps:
+      - uses: ./.github/workflows/Build.yml
+        with:
+          new_version_app: ${{ needs.versioning.outputs.new_version }}  

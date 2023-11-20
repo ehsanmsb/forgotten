@@ -3,7 +3,7 @@ name: Versioning
 on:
   push:
     branches:
-      - "main"
+      - "mainasfasf"
 
 jobs:
   job1:
