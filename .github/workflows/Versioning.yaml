@@ -10,7 +10,7 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:
-      new_version: ${{ steps.commit.outputs.app_version }}    
+      new_version: ${{ steps.commit-stage.outputs.app_version }}    
     env:
       new_version_flag: false
     steps:
@@ -48,7 +48,7 @@ jobs:
         with:
           args: ed -L -u /_:project/_:version -v ${{ steps.new-version.outputs.version_tag }} pom.xml
       - name: Commit-pom-file
-        id: commit
+        id: commit-stage
         run: |
           echo "app_version=${{ steps.new-version.outputs.version_tag }}" >> "$GITHUB_OUTPUT"
           git config --global user.name 'versioning_bot'
