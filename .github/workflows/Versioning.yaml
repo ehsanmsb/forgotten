@@ -62,6 +62,6 @@ jobs:
     needs: [generate_new_version]
     uses: ./.github/workflows/Build.yaml
     with:
-      new_version_app: ${{ needs.versioning.outputs.new_version }}  
+      new_version_app: ${{ needs.generate_new_version.outputs.new_version }}  
 
 
