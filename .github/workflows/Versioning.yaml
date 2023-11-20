@@ -1,18 +1,13 @@
 name: Versioning
 
-# on:
-#   pull_request:
-#     types:
-#       - closed
-
 on:
-  push:
-    branches:
-      - "main"
+  pull_request:
+    types:
+      - closed
 
 jobs:
   generate_new_version:
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:
       new_version: ${{ steps.commit-stage.outputs.app_version }}    
@@ -66,7 +61,7 @@ jobs:
           git push
 
   call_build:
-    # if: github.event.pull_request.merged == true
+    if: ${{ (github.event.pull_request.merged == true) && (needs.generate_new_version.outputs.new_version != '') }} 
     needs: [generate_new_version]
     uses: ./.github/workflows/Build.yaml
     with:
