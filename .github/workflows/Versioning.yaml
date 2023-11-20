@@ -58,10 +58,10 @@ jobs:
           git push
 
   call_build:
-    runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     needs: [generate_new_version]
-    steps:
-      - uses: ./.github/workflows/Build.yaml
-        with:
-          new_version_app: ${{ needs.versioning.outputs.new_version }}  
+    uses: ./.github/workflows/Build.yaml
+    with:
+      new_version_app: ${{ needs.versioning.outputs.new_version }}  
+
+
