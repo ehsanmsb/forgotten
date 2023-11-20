@@ -1,10 +1,14 @@
 name: Versioning
 
-on:
-  pull_request:
-    types:
-      - closed
+# on:
+#   pull_request:
+#     types:
+#       - closed
 
+on:
+  push:
+    branches:
+      - "main"
 jobs:
   generate_new_version:
     if: github.event.pull_request.merged == true
