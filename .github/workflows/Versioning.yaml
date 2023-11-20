@@ -49,10 +49,12 @@ jobs:
           enable_prerelease_mode: false
           debug: false
       - name: change-pom-file
+        if: env.new_version_flag == 'true'
         uses: Mudlet/xmlstarlet-action@master
         with:
           args: ed -L -u /_:project/_:version -v ${{ steps.new-version.outputs.version_tag }} pom.xml
       - name: Commit-pom-file
+        if: env.new_version_flag == 'true'
         id: commit-stage
         run: |
           echo "app_version=${{ steps.new-version.outputs.version_tag }}" >> "$GITHUB_OUTPUT"
