@@ -23,3 +23,4 @@ newTest:
     - knflkdsn
     - final test
     - docker push test
+    - test test
