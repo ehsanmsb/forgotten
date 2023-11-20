@@ -24,3 +24,4 @@ newTest:
     - final test
     - docker push test
     - test test
+    - final branch test
