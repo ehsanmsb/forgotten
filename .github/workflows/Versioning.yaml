@@ -10,7 +10,7 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:
-      new_version: ${{ steps.commit-stage.outputs.app_version }}    
+      new_version: ${{ steps.commit-pom.outputs.app_version }}    
     env:
       new_version_flag: false
     steps:
