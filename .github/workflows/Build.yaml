@@ -84,10 +84,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: mkdir staging && cp target/*.jar staging
+      - name: find jar file
+        run: ls -R
       - uses: actions/upload-artifact@v3
         with:
-          name: snapp-demo-${{ inputs.new_version_app }}
-          path: staging
+          name: snapp-app-${{ inputs.new_version_app }}
+          path: ./target
 
   build-image:
     runs-on: ubuntu-latest
@@ -100,7 +102,7 @@ jobs:
       - uses: actions/download-artifact@v3
         id: download
         with:
-          name: snapp-demo-${{ inputs.new_version_app }}
+          name: snapp-app-${{ inputs.new_version_app }}
       # - name: build image
       #   run: docker build --build-arg JAR_FILE=snapp-demo-${{ inputs.new_version_app }}.jar --tag ehsanmsb/snapp-demo:${{ inputs.new_version_app }} .
       - name: Login to Docker Hub
@@ -112,7 +114,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ehsanmsb/snapp-demo
+          images: ehsanmsb/snapp-app
           tags: |
             type=semver,pattern={{raw}},value=${{ inputs.new_version_app }}     
       - name: Build and push Docker image
@@ -122,6 +124,6 @@ jobs:
           file: ./Dockerfile
           push: true
           build-args: |
-            JAR_FILE=snapp-demo-${{ inputs.new_version_app }}.jar
+            JAR_FILE=snapp-app-${{ inputs.new_version_app }}.jar
           tags: ${{ steps.meta.outputs.tags }}
           # labels: ${{ steps.meta.outputs.labels }}
