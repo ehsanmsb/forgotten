@@ -62,6 +62,6 @@ jobs:
     if: github.event.pull_request.merged == true
     needs: [generate_new_version]
     steps:
-      - uses: ./.github/workflows/Build.yml
+      - uses: ./.github/workflows/Build.yaml
         with:
           new_version_app: ${{ needs.versioning.outputs.new_version }}  
