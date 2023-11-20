@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: test input
-        run: echo $ {{ inputs.var_pass }}
+        run: echo ${{ inputs.var_pass }}
       # - name: Check commit message
       #   id: commit
       #   run: |
