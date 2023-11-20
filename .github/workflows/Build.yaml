@@ -6,6 +6,11 @@ on:
       new_version_app:
         required: true
         type: string
+    secrets:
+      docker_user:
+        required: true
+      docker_token:
+        required: true
 jobs:
   generate-tag-version:
     runs-on: ubuntu-latest
@@ -101,8 +106,8 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.docker_user }}
+          password: ${{ secrets.docker_token }}
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5

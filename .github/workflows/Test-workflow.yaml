@@ -3,7 +3,7 @@ name: Versioning
 on:
   push:
     branches:
-      - "main"
+      - "main1234"
 
 jobs:
   # generate_new_version:

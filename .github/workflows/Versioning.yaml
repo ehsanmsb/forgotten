@@ -8,7 +8,7 @@ name: Versioning
 on:
   push:
     branches:
-      - "main123"
+      - "main"
 
 jobs:
   generate_new_version:
@@ -71,5 +71,7 @@ jobs:
     uses: ./.github/workflows/Build.yaml
     with:
       new_version_app: ${{ needs.generate_new_version.outputs.new_version }}  
-
+    secrets:
+      docker_user: ${{ secrets.DOCKERHUB_USERNAME }}
+      docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
 
