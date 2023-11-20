@@ -25,3 +25,4 @@ newTest:
     - docker push test
     - test test
     - final branch test
+    - mazin mazin
