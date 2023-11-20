@@ -8,14 +8,14 @@ on:
 jobs:
   generate_new_version:
     outputs:
-      new-var: ${{ steps.testi.outputs.var_test }}
+      new_var: ${{ steps.testi.outputs.var_test }}
     runs-on: ubuntu-latest
     steps:
       - name: set value
         id: testi
         run: |
           echo "var_test=Ehsan-Mosayebi" >> "$GITHUB_OUTPUT"
-          echo "your name is: $var_test"
+          echo "your name is: ${{ var_test }}"
   call_build:
     needs: [generate_new_version]
     uses: ./.github/workflows/Build.yaml
