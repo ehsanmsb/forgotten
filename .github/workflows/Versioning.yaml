@@ -53,12 +53,17 @@ jobs:
         id: commit-pom
         run: |
           echo "app_version=${{ steps.semantic-versioning.outputs.version_tag }}" >> "$GITHUB_OUTPUT"
-          git config --global user.name 'versioning_bot'
-          git config --global user.email 'versioning.bot@gmail.com'
-          git remote set-url origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
-          git checkout "${GITHUB_REF:11}"
-          git commit -am "${{ steps.semantic-versioning.outputs.version_tag }} version has generated"
-          git push
+          git config user.name 'versioning_bot'
+          git config user.email 'versioning.bot@gmail.com'
+          if $(git remote -v | grep -q "github_origin")
+          then
+            git remote set-url github_origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          else
+            git remote add github_origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          fi
+          git add .
+          git commit --amend -m  "$(git log -1 --pretty=%B)"
+          git push -f github_origin HEAD:$GITHUB_REF_NAME -o ci.skip
 
   call_build:
     if: github.event.pull_request.merged == true 
@@ -69,4 +74,3 @@ jobs:
     secrets:
       docker_user: ${{ secrets.DOCKERHUB_USERNAME }}
       docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
-
