@@ -35,18 +35,18 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Check commit message
-        id: commit
-        run: |
-          commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
-          if [[ "$commit_message" == *"BREAKING CHANGE:"* || "$commit_message" == *"fix:"* || "$commit_message" == *"feat:"* ]]; then
-            echo "new_version_flag=true" >> $GITHUB_ENV
-            echo "Commit message contains conventional commits specification for create new version. Workflow will run."
-          else
-            echo "Commit message does not contain conventional commits specification. Workflow will be skipped."
-          fi
+      # - name: Check commit message
+      #   id: commit
+      #   run: |
+      #     commit_message=$(git log --format=%B -n 1 ${{ github.sha }})
+      #     if [[ "$commit_message" == *"BREAKING CHANGE:"* || "$commit_message" == *"fix:"* || "$commit_message" == *"feat:"* ]]; then
+      #       echo "new_version_flag=true" >> $GITHUB_ENV
+      #       echo "Commit message contains conventional commits specification for create new version. Workflow will run."
+      #     else
+      #       echo "Commit message does not contain conventional commits specification. Workflow will be skipped."
+      #     fi
       - name: semantic versioning action
-        if: env.new_version_flag == 'true'
+        # if: env.new_version_flag == 'true'
         id: semantic-versioning
         uses: paulhatch/semantic-version@v5.3.0
         with:
@@ -61,12 +61,12 @@ jobs:
           enable_prerelease_mode: false
           debug: false
       - name: change version in pom file
-        if: env.new_version_flag == 'true'
+        # if: env.new_version_flag == 'true'
         uses: Mudlet/xmlstarlet-action@master
         with:
           args: ed -L -u /_:project/_:version -v ${{ steps.semantic-versioning.outputs.version_tag }} pom.xml
       - name: commit new version
-        if: env.new_version_flag == 'true'
+        # if: env.new_version_flag == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: generate new version
