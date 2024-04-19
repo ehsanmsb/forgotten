@@ -65,7 +65,9 @@ jobs:
         uses: Mudlet/xmlstarlet-action@master
         with:
           args: ed -L -u /_:project/_:version -v ${{ steps.semantic-versioning.outputs.version_tag }} pom.xml
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - name: commit new version
+        if: env.new_version_flag == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: generate new version
       # - name: commit and push pom file
