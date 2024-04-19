@@ -25,7 +25,6 @@ jobs:
       - run: |
           echo Test code and upload Report
   versioning:
-    if: github.event.pull_request.opened == true
     runs-on: ubuntu-latest
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
