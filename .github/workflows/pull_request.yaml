@@ -5,9 +5,10 @@ on:
     types:
       - opened
       - reopened
-  push:
-    branches-ignore:
+      - edited
+    branches:
       - main
+
       
 jobs:
   lint:
