@@ -3,11 +3,14 @@ name: Pull Request
 on:
   pull_request:
     types:
-      - opened
-      - reopened
-      - edited
+      - "opened"
+      - "reopened"
+      - "edited"
     branches:
-      - main
+      - "main"
+  push:
+    branches-ignore:
+      - "main"
 
       
 jobs:
