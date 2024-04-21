@@ -2,7 +2,8 @@ name: Versioning
 
 on:
   pull_request_review:
-    types: [submitted]
+    types:
+      - submitted
       
 jobs:
   versioning:
@@ -55,9 +56,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "ci: version ${{ steps.semantic-versioning.outputs.version_tag }} is generated"
-          commit_user_name: Action Bot
-          commit_user_email: snapcyte-actions-bot@snapcyte.com
-          commit_author: Bot <actions@github.com>
 
       # - name: commit and push pom file
       #   if: env.new_version_flag == 'true'
