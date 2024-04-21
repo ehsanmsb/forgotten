@@ -54,7 +54,7 @@ jobs:
         with:
           args: ed -L -u /_:project/_:version -v ${{ steps.semantic-versioning.outputs.version_tag }} pom.xml
       - name: commit new version
-        if: env.new_version_flag == 'true'
+        # if: env.new_version_flag == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "ci: version ${{ steps.semantic-versioning.outputs.version_tag }} is generated"
