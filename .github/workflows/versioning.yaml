@@ -1,13 +1,15 @@
 name: Versioning
 
+# on:
+#   pull_request_review:
+#     types:
+#       - submitted
 on:
-  pull_request_review:
-    types:
-      - submitted
-      
+  workflow_dispatch:
+    
 jobs:
   versioning:
-    if: github.event.review.state == 'APPROVED'
+    # if: github.event.review.state == 'APPROVED'
     runs-on: ubuntu-latest
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
@@ -51,25 +53,24 @@ jobs:
         uses: Mudlet/xmlstarlet-action@master
         with:
           args: ed -L -u /_:project/_:version -v ${{ steps.semantic-versioning.outputs.version_tag }} pom.xml
-      # - name: commit new version
-        # if: env.new_version_flag == 'true'
-        # uses: stefanzweifel/git-auto-commit-action@v5
-        # with:
-        #   commit_message: "ci: version ${{ steps.semantic-versioning.outputs.version_tag }} is generated"
-        #   branch: HEAD:$GITHUB_REF_NAME
-      - name: commit and push pom file
-        # if: env.new_version_flag == 'true'
-        id: commit-pom
-        run: |
-          echo "app_version=${{ steps.semantic-versioning.outputs.version_tag }}" >> "$GITHUB_OUTPUT"
-          git config user.name 'versioning_bot'
-          git config user.email 'versioning.bot@gmail.com'
-          if $(git remote -v | grep -q "github_origin")
-          then
-            git remote set-url github_origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
-          else
-            git remote add github_origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
-          fi
-          git add .
-          git commit --amend -m  "$(git log -1 --pretty=%B)"
-          git push -f github_origin HEAD:$GITHUB_REF_NAME -o ci.skip
+      - name: commit new version
+        if: env.new_version_flag == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "ci: version ${{ steps.semantic-versioning.outputs.version_tag }} is generated"
+      # - name: commit and push pom file
+      #   # if: env.new_version_flag == 'true'
+      #   id: commit-pom
+      #   run: |
+      #     echo "app_version=${{ steps.semantic-versioning.outputs.version_tag }}" >> "$GITHUB_OUTPUT"
+      #     git config user.name 'versioning_bot'
+      #     git config user.email 'versioning.bot@gmail.com'
+      #     if $(git remote -v | grep -q "github_origin")
+      #     then
+      #       git remote set-url github_origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
+      #     else
+      #       git remote add github_origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
+      #     fi
+      #     git add .
+      #     git commit --amend -m  "$(git log -1 --pretty=%B)"
+      #     git push -f github_origin HEAD:$GITHUB_REF_NAME -o ci.skip
