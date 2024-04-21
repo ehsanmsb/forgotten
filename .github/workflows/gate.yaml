@@ -43,8 +43,8 @@ jobs:
             echo "change_state=patch" >> "$GITHUB_OUTPUT"
           fi
   feature:
-    needs: gate
-    if: ${{ needs.gate.outputs.change_state }} == "minor"
+    needs: [gate]
+    if: needs.gate.outputs.change_state == 'minor'
     runs-on: ubuntu-latest
     steps:
       - name: test
@@ -53,8 +53,8 @@ jobs:
           echo ${{ needs.gate.outputs.change_state }}
 
   patch:
-    needs: gate
-    if: ${{ needs.gate.outputs.change_state }} == "patch"
+    needs: [gate]
+    if: needs.gate.outputs.change_state == 'patch'
     runs-on: ubuntu-latest
     steps:
       - name: test
