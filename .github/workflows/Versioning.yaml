@@ -16,7 +16,7 @@ jobs:
       - name: Check version in pom file
         id: get-app-version
         run: |
-          version=$(grep -oP '(?<=<version>)[^<]+' pom.xml | sed -n 4p)
+          version=$(xmllint --xpath "/*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
           echo "::set-output name=app_version::$version"
       - name: Check Latest Tag
         id: get-latest-tag
