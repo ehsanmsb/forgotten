@@ -1,16 +1,19 @@
 name: Build
 
-on:
-  workflow_call:
-    inputs:
-      new_version_app:
-        required: true
-        type: string
-    secrets:
-      docker_user:
-        required: true
-      docker_token:
-        required: true
+# on:
+#   workflow_call:
+#     inputs:
+#       new_version_app:
+#         required: true
+#         type: string
+#     secrets:
+#       docker_user:
+#         required: true
+#       docker_token:
+#         required: true
+
+on: workflow_dispatch
+
 jobs:
   generate-tag-version:
     runs-on: ubuntu-latest
