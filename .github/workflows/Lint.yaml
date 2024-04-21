@@ -1,13 +1,6 @@
-name: Pull Request
+name: Lint
 
 on:
-  pull_request:
-    types:
-      - "opened"
-      - "reopened"
-      - "edited"
-    branches:
-      - "main"
   push:
     branches-ignore:
       - "main"
@@ -29,6 +22,7 @@ jobs:
       - run: |
           echo Test code and upload Report
   versioning:
+    needs: lint
     runs-on: ubuntu-latest
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
