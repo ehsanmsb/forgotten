@@ -2,11 +2,11 @@ name: Versioning
 
 on:
   pull_request:
-    types: [closed]
+    types:
+      - closed
       
 jobs:
   versioning:
-    needs: lint
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
