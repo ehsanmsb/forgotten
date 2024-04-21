@@ -1,12 +1,13 @@
 name: Versioning
 
 on:
-  workflow_dispatch:
+  pull_request:
+    types: [closed]
       
 jobs:
   versioning:
     needs: lint
-    if: github.event_name != 'merge_group'
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
@@ -54,7 +55,7 @@ jobs:
         # if: env.new_version_flag == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "ci: generate new version"
+          commit_message: "ci: generate version ${{ steps.semantic-versioning.outputs.version_tag }}"
       # - name: commit and push pom file
       #   if: env.new_version_flag == 'true'
       #   id: commit-pom
