@@ -73,7 +73,7 @@ jobs:
         # if: env.new_version_flag == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: generate new version
+          commit_message: "ci: generate new version"
       # - name: commit and push pom file
       #   if: env.new_version_flag == 'true'
       #   id: commit-pom
