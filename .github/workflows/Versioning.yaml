@@ -35,12 +35,12 @@ jobs:
           latest_tag=${version#"v"}
           IFS='.' read -r -a pom_version_parts <<< "$pom_version"
           IFS='.' read -r -a latest_tag_parts <<< "$latest_tag"
-          if [[ "${latest_tag_parts[1]}" != "${latest_tag_parts[1]}" ]]; then
-            echo "Minor version is chnaged"
+          if [[ "${latest_tag_parts[1]}" == "${latest_tag_parts[1]}" ]]; then
+             test="Minor version is chnaged"
           elif [[ "${latest_tag_parts[2]}" != "${latest_tag_parts[2]}" ]]; then
-            echo "Patche version is chnaged"
+            test="Patche version is chnaged"
           fi
-
+          echo $test
   # call_build:
   #   if: github.event.pull_request.merged == true 
   #   needs: [generate_new_version]
