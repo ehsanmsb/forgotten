@@ -50,6 +50,14 @@ jobs:
       - name: test
         run: echo "Test is Okey" 
 
+  patch:
+    needs: gate
+    if: ${{ needs.gate.outputs.change_state }} == "patch"
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: echo "Test is Okey" 
+
   # call_workflow:
   #   needs: gate
   #   runs-on: ubuntu-latest
