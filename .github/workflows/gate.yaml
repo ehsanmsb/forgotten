@@ -1,0 +1,71 @@
+name: gate
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      change_state: ${{ steps.comparison-version.outputs.change_state }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: install requirement
+        run: sudo apt-get install libxml2-utils
+      - name: Check version in pom file
+        id: get-app-version
+        run: |
+          version=$(xmllint --xpath "/*[local-name()='project']/*[local-name()='version']/text()" pom.xml)
+          echo "::set-output name=app_version::$version"
+      - name: Check Latest Tag
+        id: get-latest-tag
+        run: |
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+          echo "::set-output name=latest_tag::$latest_tag"
+      - name: Compare versions
+        id: comparison-version
+        run: |
+          version=${{ steps.get-app-version.outputs.app_version }}
+          pom_version=${version#"v"}
+          version=${{ steps.get-latest-tag.outputs.latest_tag }}
+          latest_tag=${version#"v"}
+          IFS='.' read -r -a pom_version_parts <<< "$pom_version"
+          IFS='.' read -r -a latest_tag_parts <<< "$latest_tag"
+          if [[ "${latest_tag_parts[1]}" == "${latest_tag_parts[1]}" ]]; then
+             echo "change_state=minor" >> "$GITHUB_OUTPUT"
+          elif [[ "${latest_tag_parts[2]}" != "${latest_tag_parts[2]}" ]]; then
+            echo "change_state=patch" >> "$GITHUB_OUTPUT"
+          fi
+  feature:
+    needs: [gate]
+    if: needs.gate.outputs.change_state == 'minor'
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: |
+          echo "Test is Okey"
+          echo ${{ needs.gate.outputs.change_state }}
+
+  patch:
+    needs: [gate]
+    if: needs.gate.outputs.change_state == 'patch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: echo "Test is Okey" 
+
+  # call_workflow:
+  #   needs: gate
+  #   runs-on: ubuntu-latest
+  #   uses: ./.github/workflows/Build.yaml
+  #   with:
+  #     new_version_app: ${{ needs.generate_new_version.outputs.new_version }}  
+  #   secrets:
+  #     docker_user: ${{ secrets.DOCKERHUB_USERNAME }}
+  #     docker_token: ${{ secrets.DOCKERHUB_TOKEN }}
