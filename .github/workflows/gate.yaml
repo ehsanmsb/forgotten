@@ -1,4 +1,4 @@
-name: Versioning
+name: gate
 
 on:
   push:
@@ -31,19 +31,26 @@ jobs:
         run: |
           version=${{ steps.get-app-version.outputs.app_version }}
           pom_version=${version#"v"}
-          version=$${{ steps.get-latest-tag.outputs.latest_tag }}
+          version=${{ steps.get-latest-tag.outputs.latest_tag }}
           latest_tag=${version#"v"}
           IFS='.' read -r -a pom_version_parts <<< "$pom_version"
           IFS='.' read -r -a latest_tag_parts <<< "$latest_tag"
           if [[ "${latest_tag_parts[1]}" == "${latest_tag_parts[1]}" ]]; then
-             test="Minor version is chnaged"
+             echo "::set-output name=change_version::minor"
           elif [[ "${latest_tag_parts[2]}" != "${latest_tag_parts[2]}" ]]; then
-            test="Patche version is chnaged"
+            echo "::set-output name=change_version::patch"
           fi
-          echo $test
-  # call_build:
-  #   if: github.event.pull_request.merged == true 
-  #   needs: [generate_new_version]
+  feature:
+    if: ${{ steps.get-latest-tag.outputs.latest_tag }} == minor
+    needs: gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: echo "Test is Okey" 
+
+  # call_workflow:
+  #   needs: gate
+  #   runs-on: ubuntu-latest
   #   uses: ./.github/workflows/Build.yaml
   #   with:
   #     new_version_app: ${{ needs.generate_new_version.outputs.new_version }}  
