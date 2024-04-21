@@ -56,24 +56,20 @@ jobs:
         # uses: stefanzweifel/git-auto-commit-action@v5
         # with:
         #   commit_message: "ci: version ${{ steps.semantic-versioning.outputs.version_tag }} is generated"
-      - name: Commit & Push changes
-        uses: actions-js/push@master
-        with:
-          github_token: ${{ secrets.SNAPP_REPO_TOKEN }}
-          message: "ci: version ${{ steps.semantic-versioning.outputs.version_tag }} is generated"
-      # - name: commit and push pom file
-      #   if: env.new_version_flag == 'true'
-      #   id: commit-pom
-      #   run: |
-      #     echo "app_version=${{ steps.semantic-versioning.outputs.version_tag }}" >> "$GITHUB_OUTPUT"
-      #     git config user.name 'versioning_bot'
-      #     git config user.email 'versioning.bot@gmail.com'
-      #     if $(git remote -v | grep -q "github_origin")
-      #     then
-      #       git remote set-url github_origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
-      #     else
-      #       git remote add github_origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
-      #     fi
-      #     git add .
-      #     git commit --amend -m  "$(git log -1 --pretty=%B)"
-      #     git push -f github_origin HEAD:$GITHUB_REF_NAME -o ci.skip
+        #   branch: HEAD:$GITHUB_REF_NAME
+      - name: commit and push pom file
+        # if: env.new_version_flag == 'true'
+        id: commit-pom
+        run: |
+          echo "app_version=${{ steps.semantic-versioning.outputs.version_tag }}" >> "$GITHUB_OUTPUT"
+          git config user.name 'versioning_bot'
+          git config user.email 'versioning.bot@gmail.com'
+          if $(git remote -v | grep -q "github_origin")
+          then
+            git remote set-url github_origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          else
+            git remote add github_origin https://x-access-token:${{ secrets.SNAPP_REPO_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          fi
+          git add .
+          git commit --amend -m  "$(git log -1 --pretty=%B)"
+          git push -f github_origin HEAD:$GITHUB_REF_NAME -o ci.skip
