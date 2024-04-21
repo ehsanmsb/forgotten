@@ -1,6 +1,8 @@
 name: Lint
 
 on:
+  merge_group:
+  pull_request:
   push:
     branches-ignore:
       - "main"
@@ -23,6 +25,7 @@ jobs:
           echo Test code and upload Report
   versioning:
     needs: lint
+    if: github.event_name != 'merge_group'
     runs-on: ubuntu-latest
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
