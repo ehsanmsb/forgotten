@@ -8,6 +8,8 @@ on:
 jobs:
   gate:
     runs-on: ubuntu-latest
+    outputs:
+      change_state: ${{ steps.comparison-version.outputs.change_state }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -36,13 +38,13 @@ jobs:
           IFS='.' read -r -a pom_version_parts <<< "$pom_version"
           IFS='.' read -r -a latest_tag_parts <<< "$latest_tag"
           if [[ "${latest_tag_parts[1]}" == "${latest_tag_parts[1]}" ]]; then
-             echo "::set-output name=change_version::minor"
+             echo "change_state=minor" >> "$GITHUB_OUTPUT"
           elif [[ "${latest_tag_parts[2]}" != "${latest_tag_parts[2]}" ]]; then
-            echo "::set-output name=change_version::patch"
+            echo "change_state=patch" >> "$GITHUB_OUTPUT"
           fi
   feature:
-    if: ${{ steps.get-latest-tag.outputs.latest_tag }} == minor
     needs: gate
+    if: ${{ needs.gate.outputs.change_state }} == "minor"
     runs-on: ubuntu-latest
     steps:
       - name: test
