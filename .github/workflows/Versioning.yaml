@@ -13,6 +13,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: install requirement
+        run: sudo apt-get install libxml2-utils
       - name: Check version in pom file
         id: get-app-version
         run: |
