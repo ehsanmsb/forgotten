@@ -16,7 +16,7 @@ jobs:
       contents: write
     outputs:
       new_version: ${{ steps.commit-pom.outputs.app_version }}
-      branch_ref: ${{ steps.branch.outputs.branch_head_ref }}   
+      branch_head_ref: ${{ steps.branch.outputs.branch_head_ref }}   
     env:
       new_version_flag: false
     steps:
