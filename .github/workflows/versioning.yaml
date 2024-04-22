@@ -15,6 +15,7 @@ jobs:
       change_state: ${{ steps.comparison-version.outputs.change_state }}
     env:
       commit_message: "bot message"
+      latest_tag_version: "1.0.0"
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -56,15 +57,15 @@ jobs:
         run: |
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
-          echo "::set-output name=latest_tag::$latest_tag"
+          echo "latest_tag_version=$last_tag" >> $GITHUB_ENV
       - name: Compare versions
         id: comparison-version
         run: |
           version=${{ steps.semantic-versioning.outputs.version_tag }}
           new_version=${version#"v"}
-          version=${{ steps.get-latest-tag.outputs.latest_tag }}
+          version=${{ env.latest_tag_version }}
           latest_tag=${version#"v"}
-          IFS='.' read -r -a pom_version_parts <<< "$pom_version"
+          IFS='.' read -r -a pom_version_parts <<< "$new_version"
           IFS='.' read -r -a latest_tag_parts <<< "$latest_tag"
           if [[ "${latest_tag_parts[1]}" != "${latest_tag_parts[1]}" ]]; then
              echo "change_state=release" >> "$GITHUB_OUTPUT"
