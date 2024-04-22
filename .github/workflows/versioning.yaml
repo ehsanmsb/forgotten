@@ -1,15 +1,13 @@
 name: Versioning
 
 on:
-  pull_request_review:
-    types:
-      - submitted
-# on:
-#   workflow_dispatch:
+  push:
+    branches:
+      - "main"
     
 jobs:
   versioning:
-    if: github.event.review.state == 'APPROVED'
+    # if: github.event.review.state == 'APPROVED'
     runs-on: ubuntu-latest
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
@@ -63,8 +61,11 @@ jobs:
         # if: env.new_version_flag == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "ci: version ${{ steps.semantic-versioning.outputs.version_tag }} is generated"
-          branch: ${{ github.event.pull_request.head.ref }}
+          # commit_message: "ci: version ${{ steps.semantic-versioning.outputs.version_tag }} is generated"
+          branch: main
+          commit_options: '--amend --no-edit'
+          push_options: '--force'
+          skip_fetch: true
       # - name: commit and push pom file
       #   # if: env.new_version_flag == 'true'
       #   id: commit-pom
