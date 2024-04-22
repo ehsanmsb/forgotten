@@ -16,7 +16,7 @@ jobs:
       contents: write
     outputs:
       new_version: ${{ steps.commit-pom.outputs.app_version }}
-      branch_head_ref: ${{ steps.branch.outputs.branch_head_ref }}   
+      # branch_head_ref: ${{ steps.branch.outputs.branch_head_ref }}   
     env:
       new_version_flag: false
     steps:
@@ -54,22 +54,17 @@ jobs:
         uses: Mudlet/xmlstarlet-action@master
         with:
           args: ed -L -u /_:project/_:version -v ${{ steps.semantic-versioning.outputs.version_tag }} pom.xml
-      - name: extract branch name
-        id: branch
-        run: |
-          echo $GITHUB_HEAD_REF
-          echo "branch_head_ref=$GITHUB_HEAD_REF" >> "$GITHUB_OUTPUT"
-      - name: Test branch name
-        id: name
-        run: |
-          echo $GITHUB_HEAD_REF
-          echo "${{ steps.branch.outputs.branch_head_ref }}"
+      # - name: extract branch name
+      #   id: branch
+      #   run: |
+      #     echo $GITHUB_HEAD_REF
+      #     echo "branch_head_ref=$GITHUB_HEAD_REF" >> "$GITHUB_OUTPUT"
       - name: commit new version
         # if: env.new_version_flag == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "ci: version ${{ steps.semantic-versioning.outputs.version_tag }} is generated"
-          branch: "${{ steps.branch.outputs.branch_head_ref }}"
+          branch: ${{ github.event.pull_request.head.ref }}
       # - name: commit and push pom file
       #   # if: env.new_version_flag == 'true'
       #   id: commit-pom
