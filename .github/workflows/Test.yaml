@@ -11,8 +11,8 @@ jobs:
     steps:
       - name: value
         run: |
-          echo $GITHUB_BASE_REF
-          echo $GITHUB_REF
-          echo "${{ github.event.review.pull_request.head.ref }}"
-          echo $GITHUB_REF_NAME
-          echo $$RUNNER_OS
+          echo "Review SHA: $GITHUB_SHA"
+          echo "Review Ref: $GITHUB_REF"
+          echo "Pull Request Ref: ${{ github.event.review.pull_request.head.ref }}"
+          echo "Pull Request Name: ${{ github.event.review.pull_request.head.ref }}"
+          echo "Runner OS: $RUNNER_OS"
