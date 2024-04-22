@@ -13,6 +13,6 @@ jobs:
         run: |
           echo $GITHUB_BASE_REF
           echo $GITHUB_REF
-          echo $github.event.pull_request.head.ref
+          echo "${{ github.event.review.pull_request.head.ref }}""
           echo $GITHUB_REF_NAME
           echo $$RUNNER_OS
