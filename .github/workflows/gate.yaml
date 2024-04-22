@@ -1,9 +1,8 @@
 name: gate
 
 on:
-  push:
-    branches:
-      - "main"
+  workflow_dispatch:
+    
 
 jobs:
   gate:

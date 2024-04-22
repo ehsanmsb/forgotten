@@ -12,6 +12,7 @@ jobs:
       contents: write
     outputs:
       new_version: ${{ steps.commit-pom.outputs.app_version }}
+      change_state: ${{ steps.comparison-version.outputs.change_state }}
     env:
       commit_message: "bot message"
     steps:
@@ -50,7 +51,38 @@ jobs:
           commit_options: '--amend --no-edit'
           push_options: '--force'
           skip_fetch: true
+      - name: Check Latest Tag
+        id: get-latest-tag
+        run: |
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+          echo "::set-output name=latest_tag::$latest_tag"
+      - name: Compare versions
+        id: comparison-version
+        run: |
+          version=${{ steps.semantic-versioning.outputs.version_tag }}
+          new_version=${version#"v"}
+          version=${{ steps.get-latest-tag.outputs.latest_tag }}
+          latest_tag=${version#"v"}
+          IFS='.' read -r -a pom_version_parts <<< "$pom_version"
+          IFS='.' read -r -a latest_tag_parts <<< "$latest_tag"
+          if [[ "${latest_tag_parts[1]}" != "${latest_tag_parts[1]}" ]]; then
+             echo "change_state=release" >> "$GITHUB_OUTPUT"
+          elif [[ "${latest_tag_parts[2]}" != "${latest_tag_parts[2]}" ]]; then
+            echo "change_state=hot-fix" >> "$GITHUB_OUTPUT"
+          fi
       - name: create tag from new version
+        if: ${{ steps.comparison-version.outputs.change_state }}
         run: |
           git tag "${{ steps.semantic-versioning.outputs.version_tag }}"
           git push origin "${{ steps.semantic-versioning.outputs.version_tag }}" --force
+
+  release:
+    needs: [versioning]
+    if: needs.versioning.outputs.change_state == 'minor'
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: |
+          echo "Test is Okey"
+          echo ${{ needs.gate.outputs.change_state }}
