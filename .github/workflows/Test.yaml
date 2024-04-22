@@ -1,7 +1,12 @@
 name: Test
 
 on:
-  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
   
 jobs:
   test:
@@ -9,5 +14,8 @@ jobs:
     steps:
       - name: value
         run: |
+          echo $GITHUB_BASE_REF
+          echo $GITHUB_REF
           echo $GITHUB_HEAD_REF
+          echo $GITHUB_REF_NAME
           echo $$RUNNER_OS
