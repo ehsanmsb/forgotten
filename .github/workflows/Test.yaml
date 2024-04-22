@@ -13,6 +13,6 @@ jobs:
         run: |
           echo "Review SHA: $GITHUB_SHA"
           echo "Review Ref: $GITHUB_REF"
-          echo "Pull Request Ref: ${{ github.event.review.pull_request.head.ref }}"
-          echo "Pull Request Name: ${{ github.event.review.pull_request.head.ref }}"
+          echo "Pull Request Ref: ${{ github.event.pull_request.head.ref }}"
+          echo "Pull Request Name: ${{ github.event.pull_request.head.ref }}"
           echo "Runner OS: $RUNNER_OS"
