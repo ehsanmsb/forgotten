@@ -14,9 +14,8 @@ jobs:
       contents: write
     outputs:
       new_version: ${{ steps.commit-pom.outputs.app_version }}
-      # branch_head_ref: ${{ steps.branch.outputs.branch_head_ref }}   
     env:
-      new_version_flag: false
+      commit_message: "bot message"
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -52,16 +51,16 @@ jobs:
         uses: Mudlet/xmlstarlet-action@master
         with:
           args: ed -L -u /_:project/_:version -v ${{ steps.semantic-versioning.outputs.version_tag }} pom.xml
-      # - name: extract branch name
-      #   id: branch
-      #   run: |
-      #     echo $GITHUB_HEAD_REF
-      #     echo "branch_head_ref=$GITHUB_HEAD_REF" >> "$GITHUB_OUTPUT"
+      - name: commit message
+        id: message
+        run: |
+          last_commit_message=$(git log -1 --pretty=%B)
+          echo "$commit_message=$last_commit_message" >> $GITHUB_ENV
       - name: commit new version
         # if: env.new_version_flag == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          # commit_message: "ci: version ${{ steps.semantic-versioning.outputs.version_tag }} is generated"
+          commit_message: ${{ env.commit_message }}
           branch: main
           commit_options: '--amend --no-edit'
           push_options: '--force'
