@@ -55,7 +55,7 @@ jobs:
         id: message
         run: |
           last_commit_message=$(git log -1 --pretty=%B)
-          echo "$commit_message=$last_commit_message" >> $GITHUB_ENV
+          echo "commit_message=$last_commit_message" >> $GITHUB_ENV
       - name: commit new version
         # if: env.new_version_flag == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
