@@ -15,7 +15,8 @@ jobs:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
       contents: write
     outputs:
-      new_version: ${{ steps.commit-pom.outputs.app_version }}    
+      new_version: ${{ steps.commit-pom.outputs.app_version }}
+      branch_ref: ${{ steps.branch.outputs.branch_head_ref }}   
     env:
       new_version_flag: false
     steps:
@@ -42,10 +43,10 @@ jobs:
           major_pattern: "BREAKING CHANGE:"
           minor_pattern: "feat:"
           version_format: "${major}.${minor}.${patch}"
-          bump_each_commit: true
+          bump_each_commit: false
           bump_each_commit_patch_pattern: "fix:"
           search_commit_body: true
-          user_format_type: "csv"
+          user_format_type: "json"
           enable_prerelease_mode: false
           debug: false
       - name: change version in pom file
@@ -53,12 +54,16 @@ jobs:
         uses: Mudlet/xmlstarlet-action@master
         with:
           args: ed -L -u /_:project/_:version -v ${{ steps.semantic-versioning.outputs.version_tag }} pom.xml
+      - name: extract branch name
+        id: branch
+        run: |
+          echo "branch_head_ref=$GITHUB_HEAD_REF" >> "$GITHUB_OUTPUT"
       - name: commit new version
         # if: env.new_version_flag == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "ci: version ${{ steps.semantic-versioning.outputs.version_tag }} is generated"
-          branch: ${{ env.GITHUB_HEAD_REF }}    
+          branch: "${{ steps.branch.outputs.branch_head_ref }}"
       # - name: commit and push pom file
       #   # if: env.new_version_flag == 'true'
       #   id: commit-pom

@@ -1,0 +1,21 @@
+name: Test
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
+  
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: value
+        run: |
+          echo $GITHUB_BASE_REF
+          echo $GITHUB_REF
+          echo $GITHUB_HEAD_REF
+          echo $GITHUB_REF_NAME
+          echo $$RUNNER_OS
