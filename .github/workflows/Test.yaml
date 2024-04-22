@@ -1,0 +1,12 @@
+name: Test
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: value
+        run: |
+          echo $GITHUB_HEAD_REF
