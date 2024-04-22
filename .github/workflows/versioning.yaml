@@ -57,7 +57,13 @@ jobs:
       - name: extract branch name
         id: branch
         run: |
+          echo $GITHUB_HEAD_REF
           echo "branch_head_ref=$GITHUB_HEAD_REF" >> "$GITHUB_OUTPUT"
+      - name: Test branch name
+        id: name
+        run: |
+          echo $GITHUB_HEAD_REF
+          echo "${{ steps.branch.outputs.branch_head_ref }}"
       - name: commit new version
         # if: env.new_version_flag == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
