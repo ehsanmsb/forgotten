@@ -10,7 +10,7 @@
   </parent>
   <groupId>io.ehsan</groupId>
   <artifactId>snapp-app</artifactId>
-  <version>v2.15.0</version>
+  <version>v2.20.4</version>
   <packaging>jar</packaging>
   <name>snapp-app</name>
   <description>Demo project for Snapp</description>
