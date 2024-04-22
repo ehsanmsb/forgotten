@@ -10,3 +10,4 @@ jobs:
       - name: value
         run: |
           echo $GITHUB_HEAD_REF
+          echo $$RUNNER_OS
