@@ -11,7 +11,7 @@ jobs:
     permissions:
       contents: write
     outputs:
-      new_version: ${{ steps.commit-pom.outputs.app_version }}
+      new_version: ${{ steps.message.outputs.new_version }}
       change_state: ${{ steps.comparison-version.outputs.change_state }}
     env:
       commit_message: "bot message"
@@ -44,6 +44,8 @@ jobs:
         run: |
           last_commit_message=$(git log -1 --pretty=%B)
           echo "commit_message=$last_commit_message" >> $GITHUB_ENV
+          new_version=${{ steps.semantic-versioning.outputs.version_tag }}
+          echo "new_version=$new_version" >> "$GITHUB_OUTPUT"
       - name: commit new version
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
@@ -88,9 +90,9 @@ jobs:
       - name: create branch name
         id: branch-name
         run: |
-          release_branch=${{ needs.gate.outputs.change_state }}
+          release_branch=${{ needs.versioning.outputs.new_version }}
           tmp_name="${release_branch%?}"
-          release_branch="v${tmp_name}x"
+          release_branch="${tmp_name}x"
           echo "release_branch=$release_branch" >> $GITHUB_ENV
       - name: create release branch
         uses: peterjgrainger/action-create-branch@v2.2.0
