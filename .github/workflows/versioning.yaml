@@ -65,11 +65,11 @@ jobs:
           new_version=${version#"v"}
           version=${{ env.latest_tag_version }}
           latest_tag=${version#"v"}
-          IFS='.' read -r -a pom_version_parts <<< "$new_version"
+          IFS='.' read -r -a new_version_parts <<< "$new_version"
           IFS='.' read -r -a latest_tag_parts <<< "$latest_tag"
-          if [[ "${latest_tag_parts[1]}" != "${latest_tag_parts[1]}" ]]; then
+          if [[ "${new_version_parts[1]}" != "${latest_tag_parts[1]}" ]]; then
              echo "change_state=release" >> "$GITHUB_OUTPUT"
-          elif [[ "${latest_tag_parts[2]}" != "${latest_tag_parts[2]}" ]]; then
+          elif [[ "${new_version_parts[2]}" != "${latest_tag_parts[2]}" ]]; then
             echo "change_state=hot-fix" >> "$GITHUB_OUTPUT"
           fi
       - name: create tag from new version
