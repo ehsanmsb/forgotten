@@ -80,7 +80,7 @@ jobs:
 
   release:
     needs: [versioning]
-    if: needs.versioning.outputs.change_state == 'minor'
+    if: needs.versioning.outputs.change_state == 'release'
     runs-on: ubuntu-latest
     steps:
       - name: test
