@@ -82,7 +82,23 @@ jobs:
     needs: [versioning]
     if: needs.versioning.outputs.change_state == 'release'
     runs-on: ubuntu-latest
+    env:
+      release_branch: "empty"
     steps:
+      - name: create branch name
+        id: branch-name
+        run: |
+          release_branch=${{ needs.gate.outputs.change_state }}
+          tmp_name="${release_branch%?}"
+          release_branch="v${tmp_name}x"
+          echo "release_branch=$release_branch" >> $GITHUB_ENV
+      - name: create release branch
+        uses: peterjgrainger/action-create-branch@v2.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
+        with:
+          branch: "${{ env.release_branch }}"
+          sha: '${{ github.event.pull_request.head.sha }}'
       - name: test
         run: |
           echo "Test is Okey"
