@@ -86,6 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       release_branch: "empty"
+      current_date: "empty"
     steps:
       - name: create branch name
         id: branch-name
@@ -101,7 +102,24 @@ jobs:
         with:
           branch: "${{ env.release_branch }}"
           sha: '${{ github.event.pull_request.head.sha }}'
-      - name: test
+      - name: current time
         run: |
-          echo "Test is Okey"
-          echo ${{ needs.gate.outputs.change_state }}
+          current_date=$(date +"%Y%m%d")
+          echo "current_date=$current_date" >> $GITHUB_ENV
+      - name: Build Changelog
+        id: changelog
+        uses: mikepenz/release-changelog-builder-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
+        with:
+          tag_name: ${{ needs.versioning.outputs.new_version }}
+          release_name: ${{ needs.versioning.outputs.new_version }}-${{ env.current_date }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
+
