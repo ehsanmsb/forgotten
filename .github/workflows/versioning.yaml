@@ -105,8 +105,8 @@ jobs:
         run: mkdir app && cp target/*.jar app
       - uses: actions/upload-artifact@v3
         with:
-          name: snapp-app-${{ steps.semantic-versioning.outputs.version_tag }}
-          path: app/snapp-app-${{ steps.semantic-versioning.outputs.version_tag }}.jar
+          name: snapp-app-${{ needs.versioning.outputs.new_version }}
+          path: app/snapp-app-${{ needs.versioning.outputs.new_version }}.jar
 
   release:
     needs: [versioning, artifact]
