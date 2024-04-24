@@ -103,10 +103,6 @@ jobs:
             ${{ runner.os }}-maven-
       - name: change jar file directory name 
         run: mkdir app && cp target/*.jar app
-      - name: check file 
-        run: |
-          ls ./app/
-          ls ./target/
       - name: upload artifact    
         uses: actions/upload-artifact@v3
         with:
@@ -155,4 +151,13 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false
-
+      - name: upload release artifact
+        uses: actions/upload-release-asset@v1
+        if: needs.versioning.outputs.change_state == 'release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./app/snapp-app-${{ needs.versioning.outputs.new_version }}.jar
+          asset_name: snapp-app-${{ needs.versioning.outputs.new_version }}.jar
+          asset_content_type: application
