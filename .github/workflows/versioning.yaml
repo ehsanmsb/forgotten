@@ -144,6 +144,9 @@ jobs:
         id: download
         with:
           name: snapp-app-${{ needs.versioning.outputs.new_version }}.jar
+      - name: test list file
+        run: |
+          ls -R
       - name: upload release artifact
         uses: actions/upload-release-asset@v1
         if: needs.versioning.outputs.change_state == 'release'
