@@ -80,8 +80,36 @@ jobs:
           git tag "${{ steps.semantic-versioning.outputs.version_tag }}"
           git push origin "${{ steps.semantic-versioning.outputs.version_tag }}" --force
 
-  release:
+  artifact:
+    runs-on: ubuntu-latest
     needs: [versioning]
+    steps:  
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: build jar file with skipTests
+        run: mvn clean install --batch-mode -DskipTests
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: change jar file directory name 
+        run: mkdir app && cp target/*.jar app
+      - uses: actions/upload-artifact@v3
+        with:
+          name: snapp-app-${{ steps.semantic-versioning.outputs.version_tag }}
+          path: app/snapp-app-${{ steps.semantic-versioning.outputs.version_tag }}.jar
+
+  release:
+    needs: [versioning, artifact]
     if: needs.versioning.outputs.change_state == 'release'
     runs-on: ubuntu-latest
     env:
