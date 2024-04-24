@@ -102,6 +102,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: change jar file directory name 
+        run: ls -R
+      - name: change jar file directory name 
         run: mkdir app && cp target/*.jar app
       - uses: actions/upload-artifact@v3
         with:
