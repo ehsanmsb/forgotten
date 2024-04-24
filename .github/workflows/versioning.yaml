@@ -110,8 +110,8 @@ jobs:
       - name: upload artifact    
         uses: actions/upload-artifact@v3
         with:
-          name: snapp-app-${{ needs.versioning.outputs.new_version }}
-          path: app/snapp-app-${{ needs.versioning.outputs.new_version }}.jar
+          name: snapp-app-${{ needs.versioning.outputs.new_version }}.jar
+          path: ./app/
 
   release:
     needs: [versioning, artifact]
