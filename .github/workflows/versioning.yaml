@@ -146,8 +146,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./app/snapp-app-${{ needs.versioning.outputs.new_version }}.jar
-          asset_name: snapp-app-${{ needs.versioning.outputs.new_version }}-${{ env.current_date }}.jar
+          asset_path: ./app/
+          asset_name: snapp-app-${{ needs.versioning.outputs.new_version }}.jar
           asset_content_type: application
       - name: create release branch
         uses: peterjgrainger/action-create-branch@v2.2.0
