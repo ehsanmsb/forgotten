@@ -151,6 +151,10 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false
+      - uses: actions/download-artifact@v3
+        id: download
+        with:
+          name: snapp-app-${{ needs.versioning.outputs.new_version }}
       - name: upload release artifact
         uses: actions/upload-release-asset@v1
         if: needs.versioning.outputs.change_state == 'release'
@@ -158,6 +162,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./app/snapp-app-${{ needs.versioning.outputs.new_version }}.jar
-          asset_name: snapp-app-${{ needs.versioning.outputs.new_version }}.jar
+          asset_path: ./snapp-app-${{ needs.versioning.outputs.new_version }}.jar
+          asset_name: snapp-app-${{ needs.versioning.outputs.new_version }}-${{ env.current_date }}.jar
           asset_content_type: application
