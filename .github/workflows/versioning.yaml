@@ -139,6 +139,11 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false
+      - name: test for list file
+        run: |
+          ls -R
+          echo "=================="
+          ls ./app
       - name: upload release artifact
         uses: actions/upload-release-asset@v1
         if: needs.versioning.outputs.change_state == 'release'
