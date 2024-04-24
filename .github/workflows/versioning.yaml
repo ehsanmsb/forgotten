@@ -105,9 +105,8 @@ jobs:
         run: mkdir app && cp target/*.jar app
       - name: check file 
         run: |
-          ls -R
-          ls app/
-          ls target/
+          ls ./app/
+          ls ./target/
       - name: upload artifact    
         uses: actions/upload-artifact@v3
         with:
