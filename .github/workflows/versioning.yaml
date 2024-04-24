@@ -101,14 +101,15 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - name: change jar file directory name 
+        run: mkdir app && cp target/*.jar app
       - name: check file 
         run: |
           ls -R
           ls app/
           ls target/
-      - name: change jar file directory name 
-        run: mkdir app && cp target/*.jar app
-      - uses: actions/upload-artifact@v3
+      - name: upload artifact    
+        uses: actions/upload-artifact@v3
         with:
           name: snapp-app-${{ needs.versioning.outputs.new_version }}
           path: app/snapp-app-${{ needs.versioning.outputs.new_version }}.jar
