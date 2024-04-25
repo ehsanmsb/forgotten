@@ -80,18 +80,18 @@ jobs:
           git tag "${{ steps.semantic-versioning.outputs.version_tag }}"
           git push origin "${{ steps.semantic-versioning.outputs.version_tag }}" --force
 
-  release:
-    needs: [versioning]
-    if: needs.versioning.outputs.change_state == 'release'
+  artifact:
     runs-on: ubuntu-latest
-    env:
-      release_branch: "empty"
-      current_date: "empty"
-    steps:
+    needs: [versioning]
+    steps:  
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: change version in pom file
+        uses: Mudlet/xmlstarlet-action@master
+        with:
+          args: ed -L -u /_:project/_:version -v ${{ needs.versioning.outputs.new_version }}.jar pom.xml
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
@@ -112,6 +112,15 @@ jobs:
         with:
           name: snapp-app-${{ needs.versioning.outputs.new_version }}.jar
           path: ./app/
+
+  release:
+    needs: [versioning, artifact]
+    if: needs.versioning.outputs.change_state == 'release'
+    runs-on: ubuntu-latest
+    env:
+      release_branch: "empty"
+      current_date: "empty"
+    steps:
       - name: create branch name
         id: branch-name
         run: |
@@ -119,6 +128,13 @@ jobs:
           tmp_name="${release_branch%?}"
           release_branch="${tmp_name}x"
           echo "release_branch=$release_branch" >> $GITHUB_ENV
+      - name: create release branch
+        uses: peterjgrainger/action-create-branch@v2.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
+        with:
+          branch: "${{ env.release_branch }}"
+          sha: '${{ github.event.pull_request.head.sha }}'
       - name: current time
         run: |
           current_date=$(date +"%Y%m%d")
@@ -128,6 +144,20 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
+      - uses: actions/download-artifact@v3
+        id: download
+        with:
+          name: snapp-app-${{ needs.versioning.outputs.new_version }}.jar
+      - name: upload release artifact
+        uses: actions/upload-release-asset@v1
+        if: needs.versioning.outputs.change_state == 'release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./snapp-app-${{ needs.versioning.outputs.new_version }}.jar
+          asset_name: snapp-app-${{ needs.versioning.outputs.new_version }}-${{ env.current_date }}.jar
+          asset_content_type: application
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -139,25 +169,3 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false
-      - name: test for list file
-        run: |
-          ls -R
-          echo "=================="
-          ls ./app
-      - name: upload release artifact
-        uses: actions/upload-release-asset@v1
-        if: needs.versioning.outputs.change_state == 'release'
-        env:
-          GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./app/snapp-app-${{ needs.versioning.outputs.new_version }}.jar
-          asset_name: snapp-app-${{ needs.versioning.outputs.new_version }}.jar
-          asset_content_type: application/jar
-      - name: create release branch
-        uses: peterjgrainger/action-create-branch@v2.2.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
-        with:
-          branch: "${{ env.release_branch }}"
-          sha: '${{ github.event.pull_request.head.sha }}'
