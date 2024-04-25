@@ -108,7 +108,7 @@ jobs:
       - name: change jar file directory name 
         run: mkdir app && cp target/*.jar app
       - name: upload artifact    
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: snapp-app-${{ needs.versioning.outputs.new_version }}.jar
           path: ./app/
@@ -144,10 +144,10 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         id: download
-        with:
-          name: snapp-app-${{ needs.versioning.outputs.new_version }}.jar
+        # with:
+        #   name: snapp-app-${{ needs.versioning.outputs.new_version }}.jar
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
