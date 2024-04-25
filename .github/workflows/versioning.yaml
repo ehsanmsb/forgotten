@@ -91,7 +91,7 @@ jobs:
       - name: change version in pom file
         uses: Mudlet/xmlstarlet-action@master
         with:
-          args: ed -L -u /_:project/_:version -v ${{ needs.versioning.outputs.new_version }}.jar pom.xml
+          args: ed -L -u /_:project/_:version -v ${{ needs.versioning.outputs.new_version }} pom.xml
       - uses: actions/setup-java@v3
         with:
           java-version: '17'
