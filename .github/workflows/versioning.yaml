@@ -113,7 +113,7 @@ jobs:
           name: snapp-app-${{ needs.versioning.outputs.new_version }}
           path: ./app/
 
-  release:
+  feature:
     needs: [versioning, artifact]
     if: needs.versioning.outputs.change_state == 'release'
     runs-on: ubuntu-latest
@@ -159,9 +159,45 @@ jobs:
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false
-      - name: list of file
-        run: | 
-          ls -R
+      - name: upload release artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./snapp-app-${{ needs.versioning.outputs.new_version }}/snapp-app-${{ needs.versioning.outputs.new_version }}.jar
+          asset_name: snapp-app-${{ needs.versioning.outputs.new_version }}-${{ env.current_date }}.jar
+          asset_content_type: application/jar
+
+  hot_fix:
+    needs: [versioning, artifact]
+    if: needs.versioning.outputs.change_state == 'hot-fix'
+    runs-on: ubuntu-latest
+    env:
+      current_date: "empty"
+    steps:
+      - name: current time
+        run: |
+          current_date=$(date +"%Y%m%d")
+          echo "current_date=$current_date" >> $GITHUB_ENV
+      - name: Build Changelog
+        id: changelog
+        uses: mikepenz/release-changelog-builder-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
+      - uses: actions/download-artifact@v4
+        id: download
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.SNAPP_REPO_TOKEN }}
+        with:
+          tag_name: ${{ needs.versioning.outputs.new_version }}
+          release_name: ${{ needs.versioning.outputs.new_version }}-${{ env.current_date }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
       - name: upload release artifact
         uses: actions/upload-release-asset@v1
         if: needs.versioning.outputs.change_state == 'release'
