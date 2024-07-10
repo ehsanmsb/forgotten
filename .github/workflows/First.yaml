@@ -22,4 +22,4 @@ jobs:
           echo Test code and upload Report
 
   call_second:
-    uses: ./.github/workflows/Build.yaml
+    uses: ./.github/workflows/Second.yaml
