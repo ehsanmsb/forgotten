@@ -20,5 +20,6 @@ jobs:
           cache: maven
       - run: |
           echo Test code and upload Report
-      - uses: ./.github/workflows/Second.yaml
 
+  call_second:
+    uses: ./.github/workflows/Build.yaml
