@@ -3,6 +3,7 @@ name: Second
 on: 
   - workflow_dispatch
   - repository_dispatch
+  - workflow_call
 
 jobs:
   second:
