@@ -1,7 +1,9 @@
 name: Second
 
-on: workflow_dispatch
-      
+on: 
+  - workflow_dispatch
+  - repository_dispatch
+
 jobs:
   second:
     runs-on: ubuntu-latest
