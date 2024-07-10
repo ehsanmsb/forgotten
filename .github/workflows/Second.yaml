@@ -1,9 +1,6 @@
 name: Second
 
-on: 
-  - workflow_dispatch
-  - repository_dispatch
-  - workflow_call
+on: [repository_dispatch]
 
 jobs:
   second:
