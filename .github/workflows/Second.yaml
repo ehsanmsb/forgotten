@@ -1,12 +1,9 @@
-name: Lint
+name: Second
 
-on:
-  pull_request_review:
-    types:
-      - submitted
+on: workflow_dispatch
       
 jobs:
-  lint:
+  second:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
